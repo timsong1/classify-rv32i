@@ -26,10 +26,21 @@ relu:
     li t0, 1             
     blt a1, t0, error     
     li t1, 0             
-
+    li t2, 0
 loop_start:
     # TODO: Add your own implementation
+    beq t2, a1, loop_end
+    slli t3, t2, 2
+    add t3, a0, t3 
 
+    lw t4 0(t3)
+    bgt t4, t1, bigger_zero
+    sw t1 0(t3)
+bigger_zero:
+    addi t2, t2, 1
+    j loop_start
+loop_end:
+    jr ra
 error:
     li a0, 36          
     j exit          
