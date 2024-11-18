@@ -41,49 +41,66 @@ dot:
 loop_start:
     bge t1, a2, loop_end
     
+
     li t3, 0
     li t4, 0
-mul_loop_start1:    # calculate i * stride0
+mul_loop_start1:    # calculate i * stride0     mul t4, a3, t1
     beq t3, a3, mul_loop_end1
     add t4, t4, t1
 
     addi t3, t3, 1
     j mul_loop_start1
 mul_loop_end1:
+   
     slli t4, t4, 2
     add t4, t4, a0
     lw s1, 0(t4)    # s1 = arr0[i * stride0]
 
     li t3, 0
     li t4, 0
-mul_loop_start2:    #calculate i * stride1
+mul_loop_start2:    #calculate i * stride1  mul t4, a4, t1
     beq t3, a4, mul_loop_end2
     add t4, t4, t1
     addi t3, t3, 1
     j mul_loop_start2
 mul_loop_end2:
+ 
     slli t4, t4, 2
     add t4, t4, a1
     lw s2, 0(t4)    # s2 = arr1[i * stride1]
 
+ #####   mul t4, s1, s2
+
+    srai t5, s1, 31 #abs
+    xor s1, s1, t5
+    sub s1, s1, t5
+    srai t6, s2, 31 #abs
+    xor s2, s2, t6
+    sub s2, s2, t6
+
+    xor t5, t5, t6  #decide the final sign
+ 
     li t3, 0
     li t4, 0
-mul_loop_start3:    # s1 * s2
-    beq t3, s2, mul_loop_end3
-    add t4, t4, s1
+mul_loop_start3:    #calculate i * stride1  mul t4, s1, s2
+    beq t3, s1, mul_loop_end3
+    add t4, t4, s2
     addi t3, t3, 1
     j mul_loop_start3
-mul_loop_end3:      # t4 = s1 * s2
- 
+mul_loop_end3:    
+
+    xor t4, t4, t5
+    sub t4, t4, t5
+
     add t0, t0, t4
 
     addi t1, t1, 1
     j loop_start
-loop_end:
+loop_end: 
     mv a0, t0
-    addi sp, sp, 8
     lw s1, 0(sp) 
     lw s2, 4(sp) 
+    addi sp, sp, 8
     jr ra
 
 error_terminate:

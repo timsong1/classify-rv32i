@@ -43,7 +43,7 @@ matmul:
     bne a2, a4, error
 
     # Prologue
-    addi sp, sp, -28
+    addi sp, sp, -32
     sw ra, 0(sp)
     
     sw s0, 4(sp)
@@ -52,6 +52,7 @@ matmul:
     sw s3, 16(sp)
     sw s4, 20(sp)
     sw s5, 24(sp)
+    sw s6, 28(sp)
     
     li s0, 0 # outer loop counter
     li s1, 0 # inner loop counter
@@ -116,10 +117,13 @@ inner_loop_start:
     
 inner_loop_end:
     addi s0, s0, 1
+# s3 = s3 + column count1 (a2) * 4
+    slli s6, a2, 2
+    add s3, s3, s6
+
     j outer_loop_start
-    # TODO: Add your own implementation
 outer_loop_end:
-    mv a6, s2
+    #mv a6, s2
     lw ra, 0(sp)
     lw s0, 4(sp)
     lw s1, 8(sp)
@@ -127,7 +131,8 @@ outer_loop_end:
     lw s3, 16(sp)
     lw s4, 20(sp)
     lw s5, 24(sp)
-    addi sp, sp, 28
+    lw s6, 28(sp)
+    addi sp, sp, 32
     jr ra
 error:
     li a0, 38

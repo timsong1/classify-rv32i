@@ -166,7 +166,30 @@ classify:
     
     lw t0, 0(s3)
     lw t1, 0(s8)
+
+    srai t3, t0, 31 #abs
+    xor t0, t0, t3
+    sub t0, t0, t3
+
+    srai t3, t1, 31 #abs
+    xor t1, t1, t3
+    sub t1, t1, t3
+
+    xor t3, t3, t4  #decide the final sign
+
     # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    li t2, 0
+    li a0, 0
+start_loop1:
+    beq t2, t1, end_loop1
+    add a0, a0, t0
+    addi t2, t2, 1
+    j start_loop1
+end_loop1:
+
+    xor a0, a0, t3
+    sub a0, a0, t3
+    
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -203,9 +226,31 @@ classify:
     mv a0, s9 # move h to the first argument
     lw t0, 0(s3)
     lw t1, 0(s8)
+
+    srai t3, t0, 31 #abs
+    xor t0, t0, t3
+    sub t0, t0, t3
+
+    srai t3, t1, 31 #abs
+    xor t1, t1, t3
+    sub t1, t1, t3
+
+    xor t3, t3, t4  #decide the final sign
+
     # mul a1, t0, t1 # length of h array and set it as second argument
     # FIXME: Replace 'mul' with your own implementation
-    
+    li t2, 0
+    li a1, 0
+start_loop2:
+    beq t2, t1, end_loop2
+    add a1, a1, t0
+    addi t2, t2, 1
+    j start_loop2
+end_loop2:
+
+    xor a1, a1, t3
+    sub a1, a1, t3
+
     jal relu
     
     lw a0, 0(sp)
@@ -226,7 +271,30 @@ classify:
     
     lw t0, 0(s3)
     lw t1, 0(s6)
+
+    srai t3, t0, 31 #abs
+    xor t0, t0, t3
+    sub t0, t0, t3
+
+    srai t3, t1, 31 #abs
+    xor t1, t1, t3
+    sub t1, t1, t3
+
+    xor t3, t3, t4  #decide the final sign
+
     # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    li t2, 0
+    li a0, 0
+start_loop3:
+    beq t2, t1, end_loop3
+    add a0, a0, t0
+    addi t2, t2, 1
+    j start_loop3
+end_loop3:
+
+    xor a0, a0, t3
+    sub a0, a0, t3
+
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -286,9 +354,30 @@ classify:
     mv a0, s10 # load o array into first arg
     lw t0, 0(s3)
     lw t1, 0(s6)
-    mul a1, t0, t1 # load length of array into second arg
+
+    srai t3, t0, 31 #abs
+    xor t0, t0, t3
+    sub t0, t0, t3
+
+    srai t4, t1, 31 #abs
+    xor t1, t1, t4
+    sub t1, t1, t4
+
+    xor t3, t3, t4  #decide the final sign
+
+    # mul a1, t0, t1 # load length of array into second arg
     # FIXME: Replace 'mul' with your own implementation
-    
+    li t2, 0
+    li a1, 0
+start_loop4:
+    beq t2, t1, end_loop4
+    add a1, a1, t0
+    addi t2, t2, 1
+    j start_loop4
+end_loop4:
+
+    xor a1, a1, t3
+    sub a1, a1, t3
     jal argmax
     
     mv t0, a0 # move return value of argmax into t0

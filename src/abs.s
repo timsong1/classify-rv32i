@@ -16,6 +16,9 @@
 # =================================================================
 abs:
     # Prologue
+    addi sp, sp, -8
+    sw ra, 0(sp)
+    sw a0, 4(sp)
     ebreak
     # Load number from memory
     lw t0 0(a0)
@@ -28,4 +31,7 @@ abs:
     sw t0 0(a0)
 done:
     # Epilogue
+    lw ra, 0(sp)
+    lw a0, 4(sp)
+    addi sp, sp, 8
     jr ra
